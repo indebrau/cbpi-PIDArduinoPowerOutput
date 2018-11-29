@@ -6,7 +6,7 @@ from modules.core.controller import KettleController
 from modules.core.props import Property
 
 @cbpi.controller
-class PIDArduino(KettleController):
+class PIDArduinoPowerOutput(KettleController):
 
     a_p = Property.Number("P", True, 0)
     b_i = Property.Number("I", True, 0)
@@ -20,20 +20,19 @@ class PIDArduino(KettleController):
         i = float(self.b_i)
         d = float(self.c_d)
         maxout = float(self.d_max_out)
-        pid = PIDArduino(sampleTime, p, i, d, 0, maxout)
+        pid = PIDArduinoPowerOutput(sampleTime, p, i, d, 0, maxout)
 
+        self.heater_on()
+        self.sleep(2)
         while self.is_running():
-            heat_percent = pid.calc(self.get_temp(), self.get_target_temp())
-            heating_time = sampleTime * heat_percent / 100
-            wait_time = sampleTime - heating_time
-            self.heater_on(100)
-            self.sleep(heating_time)
-            self.heater_off()
-            self.sleep(wait_time)
+            heat_percent = int(pid.calc(self.get_temp(), self.get_target_temp()))
+            self.actor_power(heat_percent)
+            self.sleep(5)
+        self.heater_off()
 
 # Based on Arduino PID Library
 # See https://github.com/br3ttb/Arduino-PID-Library
-class PIDArduino(object):
+class PIDArduinoPowerOutput(object):
 
     def __init__(self, sampleTimeSec, kp, ki, kd, outputMin=float('-inf'),
                  outputMax=float('inf'), getTimeMs=None):
