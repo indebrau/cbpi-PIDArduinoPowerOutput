@@ -6,7 +6,7 @@ from modules.core.controller import KettleController
 from modules.core.props import Property
 
 @cbpi.controller
-class PIDArduinoPowerOutput(KettleController):
+class PIDKettleController(KettleController):
 
     a_p = Property.Number("P", True, 0)
     b_i = Property.Number("I", True, 0)
@@ -20,7 +20,7 @@ class PIDArduinoPowerOutput(KettleController):
         i = float(self.b_i)
         d = float(self.c_d)
         maxout = float(self.d_max_out)
-        pid = PIDArduinoPowerOutput(sampleTime, p, i, d, 0, maxout)
+        pid = PIDKettleController(sampleTime, p, i, d, 0, maxout)
 
         self.heater_on()
         self.sleep(2)
@@ -32,7 +32,7 @@ class PIDArduinoPowerOutput(KettleController):
 
 # Based on Arduino PID Library
 # See https://github.com/br3ttb/Arduino-PID-Library
-class PIDArduinoPowerOutput(object):
+class PIDKettleController(object):
 
     def __init__(self, sampleTimeSec, kp, ki, kd, outputMin=float('-inf'),
                  outputMax=float('inf'), getTimeMs=None):
